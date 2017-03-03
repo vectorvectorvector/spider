@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.spider.dao.NewsDao">
+
+    <resultMap id="NewsBaseMap" type="com.spider.model.News">
+        <id column="news_id" property="news_id" jdbcType="INTEGER"/>
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="imgurl" property="imgurl" jdbcType="VARCHAR"/>
+        <result column="url" property="url" jdbcType="VARCHAR"/>
+        <result column="title" property="title" jdbcType="VARCHAR"/>
+        <result column="channelname" property="channelname" jdbcType="VARCHAR"/>
+        <result column="content" property="content" jdbcType="VARCHAR"/>
+        <result column="time" property="time" jdbcType="DATE"/>
+        <result column="comment" property="comment" jdbcType="LONGTEXT"></result>
+    </resultMap>
+
+    <select id="selectNewsById" parameterType="java.lang.Long" resultMap="NewsBaseMap">
+        SELECT * FROM news
+        WHERE id = #{newsId}
+    </select>
+
+    <select id="selectNewsByChannelName" resultMap="NewsBaseMap">
+        SELECT * FROM news
+        WHERE channelname = #{channelName}
+    </select>
+
+    <select id="selectAllNews" resultMap="NewsBaseMap">
+        SELECT * FROM news
+    </select>
+
+    <insert id="insertNews" parameterType="com.spider.model.News">
+        insert ignore into news (id,imgurl,url,time,title,channelname,content,comment)
+        values (#{news.id},#{news.imgurl},#{news.url},#{news.time},#{news.title},#{news.channelname},#{news.content},#{news.comment})
+    </insert>
+
+</mapper>
