@@ -11,7 +11,7 @@ public class News {
     private String imgurl;
     private String url;//网页的URL
     private String title;
-    private Date time;
+    private Date time;//新闻发布的时间
     private String channelname;
     private String content;
     private String comment;
