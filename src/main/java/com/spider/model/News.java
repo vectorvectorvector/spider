@@ -6,8 +6,8 @@ import java.util.Date;
  * Created by 周超 on 2017/02/21.
  */
 public class News {
-    private int id;
     private int news_id;//新闻内的id
+    private int id;
     private String imgurl;
     private String url;//网页的URL
     private String title;
@@ -18,6 +18,14 @@ public class News {
 
     public int getNews_id() {
         return news_id;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     public void setNews_id(int news_id) {

@@ -1,23 +1,23 @@
 package com.spider.wangyi;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.NicelyResynchronizingAjaxController;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.spider.model.Comment;
-import com.spider.model.HotAndMainComments;
 import com.spider.model.News;
-import com.spider.service.NewsService;
+import com.spider.service.CommentService;
+import com.spider.service.impl.NewsServiceImpl;
 import org.apache.log4j.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import javax.annotation.Resource;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -28,13 +28,20 @@ import java.util.List;
 /**
  * Created by zhouchao on 2017/3/3.
  */
+@Service
 public class CommentsUtil {
-    private Logger log = Logger.getLogger(CommentsUtil.class);
-    private News news = new News();//保存爬取的信息
-    private HotAndMainComments hotAndMainComments = new HotAndMainComments();
 
-    @Resource
-    private NewsService newsService ;
+    private Logger log = Logger.getLogger(CommentsUtil.class);
+    private News news;//保存爬取的信息
+    @Autowired
+    private NewsServiceImpl newsService;
+    @Autowired
+    private CommentService commentService;
+    private int new_id;//新闻在数据库中存放的id
+
+    public CommentsUtil() {
+        news = new News();//保存爬取的信息
+    }
 
     public void getComments(String url) {
         String TargetURL = url;
@@ -68,16 +75,14 @@ public class CommentsUtil {
             Element mainReplies = doc.getElementById("mainReplies");//最新评论
             getHotAndMainReplies(mainReplies, false);
 
-            JSONObject comment = (JSONObject) JSON.toJSON(hotAndMainComments);
-            news.setComment(comment.toJSONString());
-
             newsService.insertNews(news);
+            new_id = newsService.selectNewsId(news.getUrl());
 
 //            System.out.println(page.asXml());
         } catch (IOException e) {
             log.error("CommentsUtil IOException:" + e.getMessage());
         } finally {
-            webClient.close();
+//            webClient.close();
         }
     }
 
@@ -99,8 +104,8 @@ public class CommentsUtil {
 
             Elements pos = author.getElementsByClass("from-logon");
             String position = pos.size() > 0 ? pos.first().text() : "";
-            comment.setPosition(position);
-            String postTime = element.getElementsByClass("postTime").first().text();//多了字符：举报
+            comment.setPositions(position);
+            String postTime = element.getElementsByClass("postTime").first().text().substring(3);//多了字符：举报
             try {
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd ");
                 Date date = sdf.parse(postTime);
@@ -125,12 +130,13 @@ public class CommentsUtil {
                     boxList.add(content.text());
                     System.out.println(content.text());
                 }
-                comment.setBoxList(boxList);
+                String jsonString = JSON.toJSONString(boxList);
+                JSONArray boxlist = JSONArray.parseArray(jsonString);
+                comment.setBoxList(boxlist.toJSONString());
             }
-            if (hotOrMain) {//热评
-                hotAndMainComments.getHotComment().add(comment);
-            } else {//最新评论
-                hotAndMainComments.getMainComment().add(comment);
+            if (new_id!=0){
+                comment.setNews_id(new_id);
+                commentService.insertComment(comment);
             }
         }
     }

@@ -25,6 +25,9 @@ public class WangYiNews {
     private NewsService newsService;
 
     @Resource
+    private CommentsUtil commentsUtil;
+
+    @Resource
     private HttpUtil httpUtil;
 
     @Value("#{configProperties['wangyinews.url']}")
@@ -62,6 +65,10 @@ public class WangYiNews {
                 newsService.insertNews(news);
             }
         }
+    }
+
+    public void getWangyiComments() {
+        commentsUtil.getComments("");
     }
 
 }

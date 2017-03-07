@@ -11,7 +11,7 @@
         <result column="channelname" property="channelname" jdbcType="VARCHAR"/>
         <result column="content" property="content" jdbcType="VARCHAR"/>
         <result column="time" property="time" jdbcType="DATE"/>
-        <result column="comment" property="comment" jdbcType="LONGTEXT"></result>
+        <result column="comment" property="comment" jdbcType="VARCHAR"></result>
     </resultMap>
 
     <select id="selectNewsById" parameterType="java.lang.Long" resultMap="NewsBaseMap">
@@ -28,9 +28,18 @@
         SELECT * FROM news
     </select>
 
-    <insert id="insertNews" parameterType="com.spider.model.News">
+    <select id="selectNewsId" resultType="java.lang.Integer">
+        SELECT news_id FROM news
+        WHERE url = #{url}
+    </select>
+
+    <insert id="insertNews" useGeneratedKeys="true" keyProperty="news_id" parameterType="com.spider.model.News">
         insert ignore into news (id,imgurl,url,time,title,channelname,content,comment)
-        values (#{news.id},#{news.imgurl},#{news.url},#{news.time},#{news.title},#{news.channelname},#{news.content},#{news.comment})
+        values
+        (#{news.id},#{news.imgurl},#{news.url},#{news.time},#{news.title},#{news.channelname},#{news.content},#{news.comment})
+        <selectKey resultType="java.lang.Integer" keyProperty="news_id">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
     </insert>
 
 </mapper>

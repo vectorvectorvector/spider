@@ -24,11 +24,16 @@ public class SpiderTimer extends TimerTask implements ApplicationContextAware {
     public void run() {
         log.info("网易新闻---------");
 //        wangYiNews.getNews();
+        wangYiNews.getWangyiComments();
     }
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;
         log.info("初始化ApplicationContext...........");
+    }
+
+    public ApplicationContext getApplicationContext() {
+        return applicationContext;
     }
 }

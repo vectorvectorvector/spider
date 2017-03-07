@@ -14,4 +14,6 @@ public interface NewsService {
     News selectNewsById(int newsId);
 
     int insertNews(News news);
+
+    int selectNewsId(String url);
 }

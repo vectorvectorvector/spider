@@ -15,4 +15,6 @@ public interface NewsDao {
     int insertNews(@Param("news") News news);
 
     List<News> selectAllNews();
+
+    int selectNewsId(@Param("url") String url);
 }

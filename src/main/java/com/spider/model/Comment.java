@@ -7,12 +7,31 @@ import java.util.List;
  * Created by zhouchao on 2017/3/5.
  */
 public class Comment {
+    private int id;
+    private int news_id;
     private String author;//评论的用户名
     private String head;//评论者的头像
-    private String position;//评论者的位置
+    private String positions;//评论者的位置
     private Date commentDate;//评论时间
     private String commentWithoutBox;//没盖楼的回复
-    private List<String> boxList;//盖楼的形式回复
+//    private List<String> boxList;//盖楼的形式回复
+    private String boxList;//盖楼的形式回复
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getNews_id() {
+        return news_id;
+    }
+
+    public void setNews_id(int news_id) {
+        this.news_id = news_id;
+    }
 
     public String getAuthor() {
         return author;
@@ -30,12 +49,12 @@ public class Comment {
         this.head = head;
     }
 
-    public String getPosition() {
-        return position;
+    public String getPositions() {
+        return positions;
     }
 
-    public void setPosition(String position) {
-        this.position = position;
+    public void setPositions(String positions) {
+        this.positions = positions;
     }
 
     public Date getCommentDate() {
@@ -54,11 +73,11 @@ public class Comment {
         this.commentWithoutBox = commentWithoutBox;
     }
 
-    public List<String> getBoxList() {
+    public String getBoxList() {
         return boxList;
     }
 
-    public void setBoxList(List<String> boxList) {
+    public void setBoxList(String boxList) {
         this.boxList = boxList;
     }
 }

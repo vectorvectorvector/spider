@@ -31,4 +31,9 @@ public class NewsServiceImpl implements NewsService {
     public int insertNews(News news){
         return newsDao.insertNews(news);
     }
+
+    @Override
+    public int selectNewsId(String url) {
+        return newsDao.selectNewsId(url);
+    }
 }

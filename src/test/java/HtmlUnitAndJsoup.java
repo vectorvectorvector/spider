@@ -321,4 +321,9 @@ public class HtmlUnitAndJsoup {
         commentsUtil.getComments("");
     }
 
+    @Test
+    public void javaTest() {
+        System.out.println("举报 2017-03-07 10:25:17".substring(3));
+    }
+
 }
