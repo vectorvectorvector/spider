@@ -5,7 +5,7 @@
     <resultMap id="CommentBaseMap" type="com.spider.model.Comment">
         <id column="id" property="id" jdbcType="INTEGER"/>
         <id column="news_id" property="news_id" jdbcType="INTEGER"/>
-        <result column="author" property="author" jdbcType="VARCHAR"/>
+        <result column="username" property="username" jdbcType="VARCHAR"/>
         <result column="head" property="head" jdbcType="VARCHAR"/>
         <result column="position" property="position" jdbcType="VARCHAR"/>
         <result column="commentdate" property="commentDate" jdbcType="DATE"/>
@@ -22,9 +22,17 @@
         SELECT * FROM comment
     </select>
 
+    <select id="selectCommentByComment" parameterType="com.spider.model.Comment" resultMap="CommentBaseMap">
+        SELECT id,news_id,username,head,positions,commentdate,commentwithoutbox,boxlist FROM comment
+        WHERE news_id = #{comment.news_id} AND
+              username = #{comment.username} AND
+              commentwithoutbox = #{comment.commentWithoutBox} AND
+              boxlist = #{comment.boxList}
+    </select>
+
     <insert id="insertComment" parameterType="com.spider.model.Comment">
-        insert ignore into comment (news_id,head,positions,commentdate,commentwithoutbox,boxlist)
-        values (#{comment.news_id},#{comment.head},#{comment.positions},#{comment.commentDate},#{comment.commentWithoutBox},#{comment.boxList})
+        insert ignore into comment (news_id,username,head,positions,commentdate,commentwithoutbox,boxlist)
+        values (#{comment.news_id},#{comment.username},#{comment.head},#{comment.positions},#{comment.commentDate},#{comment.commentWithoutBox},#{comment.boxList})
     </insert>
 
 </mapper>

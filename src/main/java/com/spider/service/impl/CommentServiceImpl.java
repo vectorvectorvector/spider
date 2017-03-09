@@ -30,4 +30,9 @@ public class CommentServiceImpl implements CommentService {
     public int insertComment(Comment comment) {
         return commentDao.insertComment(comment);
     }
+
+    @Override
+    public Comment selectCommentByComment(Comment comment) {
+        return commentDao.selectCommentByComment(comment);
+    }
 }

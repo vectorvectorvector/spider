@@ -16,4 +16,6 @@ public interface CommentDao {
     int insertComment(@Param("comment") Comment comment);
 
     List<Comment> selectAllComment();
+
+    Comment selectCommentByComment(@Param("comment") Comment comment);
 }

@@ -1,6 +1,7 @@
 /**
  * Created by 周超 on 2017/02/28.
  */
+
 import java.io.IOException;
 import java.net.MalformedURLException;
 
@@ -30,7 +31,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 public class HtmlUnitAndJsoup {
 
 	/*
-	 * 首先说说HtmlUnit相对于HttpClient的最明显的一个好处,
+     * 首先说说HtmlUnit相对于HttpClient的最明显的一个好处,
 	 * 是HtmlUnit不仅保存了这个网页对象，更难能可贵的是它还存有这个网页的所有基本操作甚至事件。
 	 * 现在很多网站使用大量ajax，普通爬虫无法获取js生成的内容。
 	 */
@@ -84,6 +85,7 @@ public class HtmlUnitAndJsoup {
         }
 
     }
+
     @Test
     public void HtmlUnitTencentNews() {
         try {
@@ -107,7 +109,6 @@ public class HtmlUnitAndJsoup {
             System.out.println("Thank God!");
 
 
-
 //            WebClient webclient = new WebClient(BrowserVersion.CHROME);
 //
 //            // 得到浏览器对象，直接New一个就能得到，现在就好比说你得到了一个浏览器了
@@ -123,8 +124,6 @@ public class HtmlUnitAndJsoup {
 //            System.out.println(htmlpage.asText());
 //
 //            htmlpage.executeJavaScript("");
-
-
 
 
 //            // 根据名字得到一个表单，查看上面这个网页的源代码可以发现表单的名字叫“f”
@@ -291,10 +290,10 @@ public class HtmlUnitAndJsoup {
 //        String TargetURL="http://comment.news.163.com/news2_bbs/CEBLDGEF0001899N.html";
 //        String TargetURL="http://news.163.com/";
 //        String TargetURL="http://news.163.com/17/0303/13/CEJUHPM8000187V9.html";
-        String TargetURL="http://comment.news.163.com/news2_bbs/CEJOE7RO000181TI.html";
+        String TargetURL = "http://comment.news.163.com/news2_bbs/CEJOE7RO000181TI.html";
 //		String TargetURL="http://www.baidu.com";
         //模拟一个浏览器
-        final WebClient webClient=new WebClient(BrowserVersion.CHROME);
+        final WebClient webClient = new WebClient(BrowserVersion.CHROME);
 //		final WebClient webClient=new WebClient(BrowserVersion.FIREFOX_10,"http://myproxyserver",8000);   //使用代理
         //设置webClient的相关参数
         webClient.getOptions().setJavaScriptEnabled(true);
@@ -303,7 +302,7 @@ public class HtmlUnitAndJsoup {
         webClient.getOptions().setThrowExceptionOnScriptError(false); //js运行错误时，是否抛出异常
         webClient.setAjaxController(new NicelyResynchronizingAjaxController());
         //模拟浏览器打开一个目标网址
-        final HtmlPage page=webClient.getPage(TargetURL);
+        final HtmlPage page = webClient.getPage(TargetURL);
 //        System.out.println(page.asText());
         System.out.println(page.asXml());
         System.out.println("------------------");
@@ -316,6 +315,26 @@ public class HtmlUnitAndJsoup {
     }
 
     @Test
+    public void testNextPage() throws Exception {
+        //tiePage.showPage(3);
+        String TargetURL = "http://comment.news.163.com/news2_bbs/CEJ5BP5100018AOP.html";
+        //模拟一个浏览器
+        final WebClient webClient = new WebClient(BrowserVersion.CHROME);
+        //设置webClient的相关参数
+        webClient.getOptions().setJavaScriptEnabled(true);
+        webClient.getOptions().setActiveXNative(false);
+        webClient.getOptions().setCssEnabled(false);
+        webClient.getOptions().setThrowExceptionOnScriptError(false); //js运行错误时，是否抛出异常
+        webClient.setAjaxController(new NicelyResynchronizingAjaxController());
+        //模拟浏览器打开一个目标网址
+        final HtmlPage page = webClient.getPage(TargetURL);
+//        ScriptResult sr=page.executeJavaScript("tiePage.showPage(3);");
+        ScriptResult sr = page.executeJavaScript("javascript:searchFinishPerson('6655',2);");
+        HtmlPage newPage = (HtmlPage) sr.getNewPage();
+        System.out.println(newPage.asText());
+    }
+
+    @Test
     public void testCommentsUtil() {
         CommentsUtil commentsUtil = new CommentsUtil();
         commentsUtil.getComments("");
@@ -323,7 +342,8 @@ public class HtmlUnitAndJsoup {
 
     @Test
     public void javaTest() {
-        System.out.println("举报 2017-03-07 10:25:17".substring(3));
+        String s = "\"3\"";
+        System.out.println(s);
     }
 
 }

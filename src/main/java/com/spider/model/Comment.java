@@ -9,13 +9,21 @@ import java.util.List;
 public class Comment {
     private int id;
     private int news_id;
-    private String author;//评论的用户名
+    private String username;//评论的用户名
     private String head;//评论者的头像
     private String positions;//评论者的位置
     private Date commentDate;//评论时间
     private String commentWithoutBox;//没盖楼的回复
-//    private List<String> boxList;//盖楼的形式回复
+    //    private List<String> boxList;//盖楼的形式回复
     private String boxList;//盖楼的形式回复
+
+    public Comment() {
+        username = "";
+        head = "";
+        positions = "";
+        commentWithoutBox = "";
+        boxList = "";
+    }
 
     public int getId() {
         return id;
@@ -33,12 +41,12 @@ public class Comment {
         this.news_id = news_id;
     }
 
-    public String getAuthor() {
-        return author;
+    public String getUsername() {
+        return username;
     }
 
-    public void setAuthor(String author) {
-        this.author = author;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getHead() {
