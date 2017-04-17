@@ -35,7 +35,6 @@ import java.util.List;
 public class CommentsUtil {
 
     private Logger log = Logger.getLogger(CommentsUtil.class);
-    private News news;//保存爬取的信息
     @Autowired
     private NewsServiceImpl newsService;
     @Autowired
@@ -46,14 +45,13 @@ public class CommentsUtil {
     @Value("#{configProperties['wangyi_page']}")
     private int wangyi_page;//新闻页数
 
-    public CommentsUtil() {
-        news = new News();//保存爬取的信息
-    }
+    @Value("#{configProperties['wangyi_comment_num']}")
+    private int commentNum;//每页显示的评论数量
 
     public void getComments(String url) {
         String TargetURL = url;
 //        TargetURL = "http://comment.news.163.com/news2_bbs/CEJ5BP5100018AOP.html";
-        TargetURL = "http://comment.sports.163.com/sports2_bbs/CF2IL9BQ00058781.html";
+//        TargetURL = "http://comment.news.163.com/news2_bbs/CI82IBA80001899O.html";
 
         //模拟一个浏览器
         final WebClient webClient = new WebClient(BrowserVersion.CHROME);
@@ -70,31 +68,6 @@ public class CommentsUtil {
             String pageXml = page.asXml(); // 以xml的形式获取响应文本
             Document doc = Jsoup.parse(pageXml);
 
-            //获取标题和原网址
-            Elements Etitle = doc.select("div.wrapper").select(".origPost");
-            String title = Etitle.first().getElementsByTag("a").first().text();
-            news.setTitle(title);
-            String Url = Etitle.first().getElementsByTag("a").first().attr("href");
-            news.setDocurl(Url);
-            //----------------------------部分属性没设置值
-            try {
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-                Date date = sdf.parse("2017-03-08 19:58:43");
-                news.setTime(date);
-            } catch (ParseException e) {
-                log.error("Date ParseException:" + e.getMessage());
-            }
-            news.setChannelname("news");
-            news.setContent("");
-            news.setComment("");
-            news.setImgurl("-");
-
-            newsid = newsService.selectNewsId(news.getUrl());
-            if (newsid == 0) {
-                newsService.insertNews(news);
-                newsid = news.getNews_id();
-            }
-
             Element hotReplies = doc.getElementById("hotReplies");//热评
             //获取评论数量
             Elements ECount = hotReplies.getElementsByClass("displayCount");
@@ -108,7 +81,7 @@ public class CommentsUtil {
 
             //翻页获取最新评论
             if (displayCount > 0) {
-                int pageNum = displayCount / 30 < wangyi_page ? displayCount / 30 : wangyi_page;
+                int pageNum = displayCount / commentNum < wangyi_page ? displayCount / commentNum : wangyi_page;
                 for (int i = 2; i < pageNum; i++) {
                     String script = "javascript:tiePage.showPage(" + i + ");";
                     page.executeJavaScript(script);

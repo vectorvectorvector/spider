@@ -28,6 +28,9 @@ public class WangYiNews {
     private CommentsUtil commentsUtil;
 
     @Resource
+    private WangYiUtil wangYiUtil;
+
+    @Resource
     private HttpUtil httpUtil;
 
     @Value("#{configProperties['wangyinews.url']}")
@@ -68,7 +71,12 @@ public class WangYiNews {
     }
 
     public void getWangyiComments() {
-        commentsUtil.getComments("");
+//        commentsUtil.getComments("http://comment.news.163.com/news2_bbs/CI82IBA80001899O.html");
+        wangYiUtil.getNewsUrl("http://news.163.com/special/0001386F/rank_news.html");//新闻排行榜
+//        wangYiUtil.getNewsCommentUrl("http://news.163.com/special/0001386F/rank_news.html");
     }
+
+
+
 
 }
