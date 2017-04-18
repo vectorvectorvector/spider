@@ -6,12 +6,14 @@ import com.alibaba.fastjson.JSONObject;
 import com.spider.model.News;
 import com.spider.service.NewsService;
 import com.spider.util.HttpUtil;
+import com.spider.util.TxtUtil;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -24,8 +26,6 @@ public class WangYiNews {
     @Resource
     private NewsService newsService;
 
-    @Resource
-    private CommentsUtil commentsUtil;
 
     @Resource
     private WangYiUtil wangYiUtil;
@@ -45,9 +45,46 @@ public class WangYiNews {
     @Value("#{configProperties['wangyinews.limit']}")
     private int limit;//新闻条数
 
-    // 1 war 军事; 2	sport 体育; 3 tech 科技; 4 edu 教育; 5 ent 娱乐; 6 money 财经; 7 gupiao 股票; 8 travel 旅游; 9 lady	女人
+    @Value("#{configProperties['wangyi_rank']}")
+    private String wangyi_rank;//包含各种类型新闻的排行榜
+
+    @Value("#{configProperties['wangyi_news_rank']}")
+    private String wangyi_news_rank;//新闻排行榜
+
+    @Value("#{configProperties['wangyi_ent_rank']}")
+    private String wangyi_ent_rank;//娱乐排行榜
+
+    @Value("#{configProperties['wangyi_sports_rank']}")
+    private String wangyi_sports_rank;//体育排行榜
+
+    @Value("#{configProperties['wangyi_finance_rank']}")
+    private String wangyi_finance_rank;//财经排行榜
+
+    @Value("#{configProperties['wangyi_tech_rank']}")
+    private String wangyi_tech_rank;//科技排行榜
+
+    @Value("#{configProperties['wangyi_car_rank']}")
+    private String wangyi_car_rank;//汽车排行榜
+
+    @Value("#{configProperties['wangyi_lady_rank']}")
+    private String wangyi_lady_rank;//女人排行榜
+
+    @Value("#{configProperties['wangyi_house_rank']}")
+    private String wangyi_house_rank;//房产排行榜
+
+    @Value("#{configProperties['wangyi_travel_rank']}")
+    private String wangyi_travel_rank;//旅游排行榜
+
+    @Value("#{configProperties['wangyi_edu_rank']}")
+    private String wangyi_edu_rank;//教育排行榜
+
+    @Value("#{configProperties['wangyi_whole_rank']}")
+    private String wangyi_whole_rank;//全站排行榜
+
+    // 0 新闻; 1 war 军事; 2	sport 体育; 3 tech 科技; 4 edu 教育; 5 ent 娱乐; 6 money 财经;
+    // 7 gupiao 股票; 8 travel 旅游; 9 lady	女人; 10 汽车; 11 房产; 12 全站
     private String type;//新闻类型
-    private String[] types = {"war", "sport", "tech", "edu", "ent", "money", "gupiao", "travel", "lady"};
+    private String[] types = {"news", "war", "sport", "tech", "edu", "ent", "money", "gupiao", "travel", "lady", "car", "house","whole"};
     private int simpleId;//查看详细内容的
 
     private ApplicationContext ac;
@@ -71,12 +108,21 @@ public class WangYiNews {
     }
 
     public void getWangyiComments() {
-//        commentsUtil.getComments("http://comment.news.163.com/news2_bbs/CI82IBA80001899O.html");
-        wangYiUtil.getNewsUrl("http://news.163.com/special/0001386F/rank_news.html");//新闻排行榜
-//        wangYiUtil.getNewsCommentUrl("http://news.163.com/special/0001386F/rank_news.html");
+//        wangYiUtil.getNewsUrl(wangyi_rank, types[0]);//各类排行榜
+        wangYiUtil.getNewsUrl(wangyi_news_rank, types[0]);//新闻排行榜
+        wangYiUtil.getNewsUrl(wangyi_sports_rank, types[2]);//体育排行榜
+        wangYiUtil.getNewsUrl(wangyi_tech_rank, types[3]);//科技排行榜
+        wangYiUtil.getNewsUrl(wangyi_edu_rank, types[4]);//教育排行榜
+        wangYiUtil.getNewsUrl(wangyi_ent_rank, types[5]);//娱乐排行榜
+        wangYiUtil.getNewsUrl(wangyi_finance_rank, types[6]);//财经排行榜
+        wangYiUtil.getNewsUrl(wangyi_travel_rank, types[8]);//旅游排行榜
+        wangYiUtil.getNewsUrl(wangyi_lady_rank, types[9]);//女人排行榜
+        wangYiUtil.getNewsUrl(wangyi_car_rank, types[10]);//汽车排行榜
+        wangYiUtil.getNewsUrl(wangyi_house_rank, types[11]);//房产排行榜
+        wangYiUtil.getNewsUrl(wangyi_whole_rank, types[12]);//全站排行榜
+        TxtUtil txtUtil = new TxtUtil();//测试
+        txtUtil.appendInfoToTxt("Stopped--"+new Date().toString());
     }
-
-
 
 
 }

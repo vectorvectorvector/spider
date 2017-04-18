@@ -4,8 +4,10 @@
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.Date;
 
 import com.gargoylesoftware.htmlunit.*;
+import com.spider.util.TxtUtil;
 import com.spider.wangyi.CommentsUtil;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
@@ -337,13 +339,13 @@ public class HtmlUnitAndJsoup {
     @Test
     public void testCommentsUtil() {
         CommentsUtil commentsUtil = new CommentsUtil();
-        commentsUtil.getComments("");
+//        commentsUtil.getComments("");
     }
 
     @Test
     public void javaTest() {
-        String s = "\"3\"";
-        System.out.println(s);
+        TxtUtil txtUtil = new TxtUtil();
+        txtUtil.appendInfoToTxt(new Date().toString());
     }
 
 }
