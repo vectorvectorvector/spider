@@ -144,12 +144,16 @@ public class WangYiUtil {
             String title = post_content_main.getElementsByTag("h1").first().text();
             news.setTitle(title);
 
-            Element commBody = post_content_main.getElementsByClass("post_topshare_wrap").first();
-            Element commLink = commBody.getElementsByClass("post_tie_top").first().getElementsByTag("a").get(1);
+            Element commBody = post_content_main.getElementsByClass("post_comment_toolbar").first();
+            Element commLink = commBody.getElementsByClass("post_comment_tiecount").first().getElementsByTag("a").first();
             String commUrl = commLink.attr("href");
             int commNum = Integer.parseInt(commLink.text());
+//            Element commBody = post_content_main.getElementsByClass("post_topshare_wrap").first();
+//            Element commLink = commBody.getElementsByClass("post_tie_top").first().getElementsByTag("a").get(1);
+//            String commUrl = commLink.attr("href");
+//            int commNum = Integer.parseInt(commLink.text());
 
-            if (commNum >= 15000) {//爬取评论
+            if (commNum >= 500) {//爬取评论
                 news.setUrl(newsUrl);
 
                 String time = post_content_main.getElementsByClass("post_time_source").first().text().substring(0, 19);
@@ -204,12 +208,12 @@ public class WangYiUtil {
 
             Element hotReplies = doc.getElementById("hotReplies");//热评
             //获取评论数量
-            Elements ECount = hotReplies.getElementsByClass("displayCount");
+           /* Elements ECount = hotReplies.getElementsByClass("displayCount");
             if (ECount.size() > 0) {
                 displayCount = Integer.parseInt(ECount.first().getElementsByTag("em").text());
             }
 
-            if (displayCount > 1000) {
+            if (displayCount > 1000)*/ {
 
                 //将新闻保存到数据库中
                 newsid = newsService.selectNewsId(news.getUrl());
@@ -217,9 +221,6 @@ public class WangYiUtil {
                     newsService.insertNews(news);
                     newsid = news.getNews_id();
                 }
-
-//                txtUtil.appendInfoToTxt("URL:" + news.getUrl());
-
                 getHotAndMainReplies(hotReplies, true);
                 Element mainReplies = doc.getElementById("mainReplies");//最新评论
                 getHotAndMainReplies(mainReplies, false);
@@ -228,6 +229,9 @@ public class WangYiUtil {
                 if (displayCount > 0) {
 //                    int pageNum = displayCount / commentNum < wangyi_page ? displayCount / commentNum : wangyi_page;
                     int pageNum = wangyi_page;
+                    if (displayCount / commentNum < pageNum) {
+                        pageNum = displayCount / commentNum;
+                    }
                     for (int i = 2; i < pageNum; i++) {
                         String script = "javascript:tiePage.showPage(" + i + ");";
                         page.executeJavaScript(script);
@@ -285,13 +289,13 @@ public class WangYiUtil {
 //                    commentWithoutBox = body.getElementsByTag("div").first().text();
                 commentWithoutBox = body.text();
                 comment.setCommentWithoutBox(commentWithoutBox);
-//                System.out.println(commentWithoutBox);
+                System.out.println(commentWithoutBox);
             } else {
                 //获取盖楼评论
                 Elements contents = body.getElementsByClass("content");
                 for (Element content : contents) {
                     boxList.add(content.text());
-//                    System.out.println(content.text());
+                    System.out.println(content.text());
                 }
                 String jsonString = JSON.toJSONString(boxList);
                 JSONArray boxlist = JSONArray.parseArray(jsonString);
