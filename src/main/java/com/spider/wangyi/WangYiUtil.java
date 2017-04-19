@@ -55,6 +55,11 @@ public class WangYiUtil {
     TxtUtil txtUtil = new TxtUtil();//测试
 //    private int count = 0;
 
+    @Value("#{configProperties['wangyi_rank_limit']}")
+    private int wangyi_rank_limit;//排行榜限制条件
+
+    @Value("#{configProperties['wangyi_commit_limit']}")
+    private int wangyi_commit_limit;//评论数量限制条件
 
     public WangYiUtil() {
         news = new News();//保存爬取的信息
@@ -80,7 +85,9 @@ public class WangYiUtil {
             Document doc = Jsoup.parse(pageXml);
 
             Elements tables = doc.getElementsByTag("table");
-            for (Element e : tables) {
+//            for (Element e : tables) {
+            for (int i = 0; i < tables.size(); i += 3) {
+                Element e = tables.get(i);
                 Elements trs = e.getElementsByTag("tr");
                 for (Element tr : trs) {
                     for (String newsclass : newsClass) {
@@ -91,7 +98,7 @@ public class WangYiUtil {
                             Element num = tr.getElementsByClass("cBlue").first();//参与评论的数量
                             int nums = Integer.parseInt(num.text());
                             String Url = td.first().getElementsByTag("a").first().attr("href");
-                            if (nums >= 15000) {
+                            if (nums >= wangyi_rank_limit) {
                                 getNewsCommentUrl(Url, type);
                             }
                             long endTime = System.currentTimeMillis();    //获取结束时间
@@ -153,7 +160,7 @@ public class WangYiUtil {
 //            String commUrl = commLink.attr("href");
 //            int commNum = Integer.parseInt(commLink.text());
 
-            if (commNum >= 500) {//爬取评论
+            if (commNum >= wangyi_commit_limit) {//爬取评论
                 news.setUrl(newsUrl);
 
                 String time = post_content_main.getElementsByClass("post_time_source").first().text().substring(0, 19);
@@ -213,7 +220,8 @@ public class WangYiUtil {
                 displayCount = Integer.parseInt(ECount.first().getElementsByTag("em").text());
             }
 
-            if (displayCount > 1000)*/ {
+            if (displayCount > 1000)*/
+            {
 
                 //将新闻保存到数据库中
                 newsid = newsService.selectNewsId(news.getUrl());

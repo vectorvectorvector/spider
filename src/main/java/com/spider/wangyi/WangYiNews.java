@@ -81,6 +81,7 @@ public class WangYiNews {
     @Value("#{configProperties['wangyi_whole_rank']}")
     private String wangyi_whole_rank;//全站排行榜
 
+
     // 0 新闻; 1 war 军事; 2	sport 体育; 3 tech 科技; 4 edu 教育; 5 ent 娱乐; 6 money 财经;
     // 7 gupiao 股票; 8 travel 旅游; 9 lady	女人; 10 汽车; 11 房产; 12 全站
     private String type;//新闻类型
