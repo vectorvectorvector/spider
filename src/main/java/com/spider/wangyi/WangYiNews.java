@@ -110,6 +110,7 @@ public class WangYiNews {
 
     public void getWangyiComments() {
 //        wangYiUtil.getNewsUrl(wangyi_rank, types[0]);//各类排行榜
+
         wangYiUtil.getNewsUrl(wangyi_news_rank, types[0]);//新闻排行榜
         wangYiUtil.getNewsUrl(wangyi_sports_rank, types[2]);//体育排行榜
         wangYiUtil.getNewsUrl(wangyi_tech_rank, types[3]);//科技排行榜
@@ -119,7 +120,7 @@ public class WangYiNews {
         wangYiUtil.getNewsUrl(wangyi_travel_rank, types[8]);//旅游排行榜
         wangYiUtil.getNewsUrl(wangyi_lady_rank, types[9]);//女人排行榜
         wangYiUtil.getNewsUrl(wangyi_car_rank, types[10]);//汽车排行榜
-        wangYiUtil.getNewsUrl(wangyi_house_rank, types[11]);//房产排行榜
+//        wangYiUtil.getNewsUrl(wangyi_house_rank, types[11]);//房产排行榜
         wangYiUtil.getNewsUrl(wangyi_whole_rank, types[12]);//全站排行榜
         TxtUtil txtUtil = new TxtUtil();//测试
         txtUtil.appendInfoToTxt("Stopped--"+new Date().toString());

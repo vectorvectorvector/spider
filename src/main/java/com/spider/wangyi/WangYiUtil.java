@@ -67,7 +67,7 @@ public class WangYiUtil {
 
     public void getNewsUrl(String url, String type) {
         String TargetURL = url;
-//        TargetURL = "http://news.163.com/special/0001386F/rank_news.html";
+//        TargetURL = "http://sports.163.com/17/0419/05/CIC30P0P00058781.html";
 
         //模拟一个浏览器
         final WebClient webClient = new WebClient(BrowserVersion.CHROME);
@@ -128,7 +128,7 @@ public class WangYiUtil {
      */
     public void getNewsCommentUrl(String newsUrl, String type) {
         String TargetURL = newsUrl;
-//        TargetURL = "http://caozhi.news.163.com/17/0418/13/CIACPPKH000181TI.html";
+//        TargetURL = "http://sports.163.com/17/0419/05/CIC30P0P00058781.html";
 
         //模拟一个浏览器
         final WebClient webClient = new WebClient(BrowserVersion.CHROME);
