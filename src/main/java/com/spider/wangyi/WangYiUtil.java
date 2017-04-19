@@ -128,7 +128,7 @@ public class WangYiUtil {
      */
     public void getNewsCommentUrl(String newsUrl, String type) {
         String TargetURL = newsUrl;
-//        TargetURL = "http://news.163.com/17/0417/12/CI7OFK8D0001899O.html";
+//        TargetURL = "http://caozhi.news.163.com/17/0418/13/CIACPPKH000181TI.html";
 
         //模拟一个浏览器
         final WebClient webClient = new WebClient(BrowserVersion.CHROME);
@@ -145,16 +145,29 @@ public class WangYiUtil {
             String pageXml = page.asXml(); // 以xml的形式获取响应文本
             Document doc = Jsoup.parse(pageXml);
 
-            Element post_content_main = doc.getElementsByClass("post_content_main").first();
-
-
+            Elements post_content_mains = doc.getElementsByClass("post_content_main");
+            if (post_content_mains.size() == 0) {
+                post_content_mains = doc.getElementsByClass("caozhi_content");
+            }
+            Element post_content_main = post_content_mains.first();
             String title = post_content_main.getElementsByTag("h1").first().text();
             news.setTitle(title);
 
-            Element commBody = post_content_main.getElementsByClass("post_comment_toolbar").first();
-            Element commLink = commBody.getElementsByClass("post_comment_tiecount").first().getElementsByTag("a").first();
-            String commUrl = commLink.attr("href");
-            int commNum = Integer.parseInt(commLink.text());
+            int commNum = 0;
+            String commUrl = "";
+            Elements commBody = post_content_main.getElementsByClass("post_comment_toolbar");
+            if (commBody.size() > 0) {
+                Element commLink = commBody.first().getElementsByClass("post_comment_tiecount").first().getElementsByTag("a").first();
+                commUrl = commLink.attr("href");
+                commNum = Integer.parseInt(commLink.text());
+            } else {
+                commBody = post_content_main.getElementsByClass("tie-info");
+                if (commBody.size() > 0) {
+                    Element commLink = commBody.first().getElementsByTag("a").first();
+                    commUrl = commLink.attr("href");
+                    commNum = Integer.parseInt(commLink.text());
+                }
+            }
 //            Element commBody = post_content_main.getElementsByClass("post_topshare_wrap").first();
 //            Element commLink = commBody.getElementsByClass("post_tie_top").first().getElementsByTag("a").get(1);
 //            String commUrl = commLink.attr("href");
@@ -163,7 +176,15 @@ public class WangYiUtil {
             if (commNum >= wangyi_commit_limit) {//爬取评论
                 news.setUrl(newsUrl);
 
-                String time = post_content_main.getElementsByClass("post_time_source").first().text().substring(0, 19);
+                String time = "";
+                Elements times = post_content_main.getElementsByClass("post_time_source");
+                if (times.size() > 0) {
+                    time = times.first().text().substring(0, 19);
+                } else {
+                    times = post_content_main.getElementsByClass("pub_time");
+                    time = times.first().text();
+                }
+
                 try {
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                     Date date = sdf.parse(time);
