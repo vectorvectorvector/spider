@@ -42,7 +42,6 @@ public class WangYiUtil {
     @Autowired
     private CommentService commentService;
     private int newsid;//新闻在数据库中存放的id
-    private int displayCount;//评论数量
 
     @Value("#{configProperties['wangyi_page']}")
     private int wangyi_page;//新闻页数
