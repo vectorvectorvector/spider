@@ -4,7 +4,7 @@
 
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.util.Date;
+import java.util.*;
 
 import com.gargoylesoftware.htmlunit.*;
 import com.spider.util.TxtUtil;
@@ -344,8 +344,13 @@ public class HtmlUnitAndJsoup {
 
     @Test
     public void javaTest() {
-        TxtUtil txtUtil = new TxtUtil();
-        txtUtil.appendInfoToTxt(new Date().toString());
+        Integer[] num = {0, 2, 3, 4, 5, 6, 8, 9, 10, 12};
+        List<Integer> list = Arrays.asList(num);
+        Collections.shuffle(list);
+        for (Integer i:list) {
+            System.out.print(i+" ");
+            System.out.println(i==2);
+        }
     }
 
 }

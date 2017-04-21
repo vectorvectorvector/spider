@@ -24,9 +24,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by zhouchao on 2017/4/17/0017.
@@ -53,8 +51,6 @@ public class WangYiUtil {
     private int commentNum;//每页显示的评论数量
 
     TxtUtil txtUtil = new TxtUtil();//测试
-//    private int count = 0;
-
     @Value("#{configProperties['wangyi_rank_limit']}")
     private int wangyi_rank_limit;//排行榜限制条件
 
@@ -65,9 +61,21 @@ public class WangYiUtil {
         news = new News();//保存爬取的信息
     }
 
+    //爬取新闻的数量
+    private int more = 20;//新闻 体育 娱乐
+    private int less = 10;//其他的
+    private boolean newsOrEntOrSports = false;
+    private int count = 0;
+
+
     public void getNewsUrl(String url, String type) {
         String TargetURL = url;
-//        TargetURL = "http://news.163.com/special/0001386F/rank_news.html";
+//        TargetURL = "http://sports.163.com/17/0419/05/CIC30P0P00058781.html";
+        if (type.equals("news") || type.equals("ent") || type.equals("sport")) {//这三个类型的评论数量比较多
+            wangyi_rank_limit = 5000;
+            wangyi_commit_limit = 300;
+            newsOrEntOrSports = true;
+        }
 
         //模拟一个浏览器
         final WebClient webClient = new WebClient(BrowserVersion.CHROME);
@@ -89,7 +97,26 @@ public class WangYiUtil {
             for (int i = 0; i < tables.size(); i += 3) {
                 Element e = tables.get(i);
                 Elements trs = e.getElementsByTag("tr");
-                for (Element tr : trs) {
+
+                Integer[] random = new Integer[trs.size() + count];
+                if (newsOrEntOrSports) {
+                    count = more > trs.size() ? trs.size() : more;
+                } else {
+                    count = less > trs.size() ? trs.size() : less;
+                }
+                int l = 0;
+                for (; l < trs.size(); l++) {
+                    random[l] = l;
+                }
+                for (int m = 0; m < count; m++) {
+                    random[l++] = m;
+                }
+                List<Integer> list = Arrays.asList(random);
+                Collections.shuffle(list);
+//                for (Element tr : trs) {
+                for (int k = 0; k < count; k++) {
+                    Element tr = trs.get(list.get(k));
+//                    Element tr = trs.get(k);
                     for (String newsclass : newsClass) {
                         Elements td = tr.getElementsByClass(newsclass);
                         if (td.size() > 0) {
@@ -128,7 +155,7 @@ public class WangYiUtil {
      */
     public void getNewsCommentUrl(String newsUrl, String type) {
         String TargetURL = newsUrl;
-//        TargetURL = "http://caozhi.news.163.com/17/0418/13/CIACPPKH000181TI.html";
+//        TargetURL = "http://sports.163.com/17/0419/05/CIC30P0P00058781.html";
 
         //模拟一个浏览器
         final WebClient webClient = new WebClient(BrowserVersion.CHROME);

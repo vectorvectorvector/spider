@@ -13,6 +13,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -85,7 +87,7 @@ public class WangYiNews {
     // 0 新闻; 1 war 军事; 2	sport 体育; 3 tech 科技; 4 edu 教育; 5 ent 娱乐; 6 money 财经;
     // 7 gupiao 股票; 8 travel 旅游; 9 lady	女人; 10 汽车; 11 房产; 12 全站
     private String type;//新闻类型
-    private String[] types = {"news", "war", "sport", "tech", "edu", "ent", "money", "gupiao", "travel", "lady", "car", "house","whole"};
+    private String[] types = {"news", "war", "sport", "tech", "edu", "ent", "money", "gupiao", "travel", "lady", "car", "house", "whole"};
     private int simpleId;//查看详细内容的
 
     private ApplicationContext ac;
@@ -109,20 +111,67 @@ public class WangYiNews {
     }
 
     public void getWangyiComments() {
-//        wangYiUtil.getNewsUrl(wangyi_rank, types[0]);//各类排行榜
-        wangYiUtil.getNewsUrl(wangyi_news_rank, types[0]);//新闻排行榜
-        wangYiUtil.getNewsUrl(wangyi_sports_rank, types[2]);//体育排行榜
-        wangYiUtil.getNewsUrl(wangyi_tech_rank, types[3]);//科技排行榜
-        wangYiUtil.getNewsUrl(wangyi_edu_rank, types[4]);//教育排行榜
-        wangYiUtil.getNewsUrl(wangyi_ent_rank, types[5]);//娱乐排行榜
-        wangYiUtil.getNewsUrl(wangyi_finance_rank, types[6]);//财经排行榜
-        wangYiUtil.getNewsUrl(wangyi_travel_rank, types[8]);//旅游排行榜
-        wangYiUtil.getNewsUrl(wangyi_lady_rank, types[9]);//女人排行榜
-        wangYiUtil.getNewsUrl(wangyi_car_rank, types[10]);//汽车排行榜
-        wangYiUtil.getNewsUrl(wangyi_house_rank, types[11]);//房产排行榜
-        wangYiUtil.getNewsUrl(wangyi_whole_rank, types[12]);//全站排行榜
+////        wangYiUtil.getNewsUrl(wangyi_rank, types[0]);//各类排行榜
+//        wangYiUtil.getNewsUrl(wangyi_news_rank, types[0]);//新闻排行榜
+//        wangYiUtil.getNewsUrl(wangyi_sports_rank, types[2]);//体育排行榜
+//        wangYiUtil.getNewsUrl(wangyi_tech_rank, types[3]);//科技排行榜
+//        wangYiUtil.getNewsUrl(wangyi_edu_rank, types[4]);//教育排行榜
+//        wangYiUtil.getNewsUrl(wangyi_ent_rank, types[5]);//娱乐排行榜
+//        wangYiUtil.getNewsUrl(wangyi_finance_rank, types[6]);//财经排行榜
+//        wangYiUtil.getNewsUrl(wangyi_travel_rank, types[8]);//旅游排行榜
+//        wangYiUtil.getNewsUrl(wangyi_lady_rank, types[9]);//女人排行榜
+//        wangYiUtil.getNewsUrl(wangyi_car_rank, types[10]);//汽车排行榜
+//        wangYiUtil.getNewsUrl(wangyi_house_rank, types[11]);//房产排行榜
+//        wangYiUtil.getNewsUrl(wangyi_whole_rank, types[12]);//全站排行榜
+
         TxtUtil txtUtil = new TxtUtil();//测试
-        txtUtil.appendInfoToTxt("Stopped--"+new Date().toString());
+        txtUtil.appendInfoToTxt("Started--" + new Date().toString());
+        Integer[] num = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13};
+        List<Integer> list = Arrays.asList(num);
+        Collections.shuffle(list);
+//        for (Integer i : list) {
+        for (int i = 0; i < 11; i++) {
+            switch (list.get(i)) {
+                case 0:
+                case 1:
+                    wangYiUtil.getNewsUrl(wangyi_news_rank, types[0]);//新闻排行榜
+                    break;
+                case 2:
+                case 7:
+                    wangYiUtil.getNewsUrl(wangyi_sports_rank, types[2]);//体育排行榜
+                    break;
+                case 3:
+                case 13:
+                    wangYiUtil.getNewsUrl(wangyi_tech_rank, types[3]);//科技排行榜
+                    break;
+                case 4:
+                    wangYiUtil.getNewsUrl(wangyi_edu_rank, types[4]);//教育排行榜
+                    break;
+                case 5:
+                    wangYiUtil.getNewsUrl(wangyi_ent_rank, types[5]);//娱乐排行榜
+                    break;
+                case 6:
+                    wangYiUtil.getNewsUrl(wangyi_finance_rank, types[6]);//财经排行榜
+                    break;
+                case 8:
+                    wangYiUtil.getNewsUrl(wangyi_travel_rank, types[8]);//旅游排行榜
+                    break;
+                case 9:
+                    wangYiUtil.getNewsUrl(wangyi_lady_rank, types[9]);//女人排行榜
+                    break;
+                case 10:
+                    wangYiUtil.getNewsUrl(wangyi_car_rank, types[10]);//汽车排行榜
+                    break;
+                case 11:
+                    wangYiUtil.getNewsUrl(wangyi_house_rank, types[11]);//房产排行榜
+                    break;
+                case 12:
+                    wangYiUtil.getNewsUrl(wangyi_whole_rank, types[12]);//全站排行榜
+                    break;
+            }
+        }
+
+        txtUtil.appendInfoToTxt("Stopped--" + new Date().toString());
     }
 
 
