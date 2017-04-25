@@ -14,7 +14,7 @@ public class SpiderTimer extends TimerTask implements ApplicationContextAware {
     private ApplicationContext applicationContext;
     private WangYiNews wangYiNews;
 
-    private Logger log = Logger.getLogger(SpiderTimer.class);
+//    private Logger log = Logger.getLogger(SpiderTimer.class);
 
     public SpiderTimer() {
         applicationContext = new ClassPathXmlApplicationContext("classpath:applicationContext.xml");
@@ -22,7 +22,8 @@ public class SpiderTimer extends TimerTask implements ApplicationContextAware {
     }
 
     public void run() {
-        log.info("网易新闻---------");
+//        log.info("网易新闻---------");
+//        System.out.println("网易新闻---------");
 //        wangYiNews.getNews();
         wangYiNews.getWangyiComments();
     }
@@ -30,7 +31,8 @@ public class SpiderTimer extends TimerTask implements ApplicationContextAware {
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;
-        log.info("初始化ApplicationContext...........");
+//        log.info("初始化ApplicationContext...........");
+//        System.out.println("初始化ApplicationContext...........");
     }
 
     public ApplicationContext getApplicationContext() {

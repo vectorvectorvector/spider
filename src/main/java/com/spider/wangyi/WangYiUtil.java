@@ -11,6 +11,7 @@ import com.spider.model.News;
 import com.spider.service.CommentService;
 import com.spider.service.impl.NewsServiceImpl;
 import com.spider.util.TxtUtil;
+import org.apache.commons.logging.LogFactory;
 import org.apache.http.conn.HttpHostConnectException;
 import org.apache.log4j.Logger;
 import org.jsoup.Jsoup;
@@ -33,7 +34,7 @@ import java.util.*;
 @Service
 public class WangYiUtil {
     private News news;//保存爬取的信息
-    private Logger log = Logger.getLogger(WangYiUtil.class);
+//    private Logger log = Logger.getLogger(WangYiUtil.class);
 
     String[] newsClass = {"red", "gray", "rank"};
 
@@ -76,6 +77,8 @@ public class WangYiUtil {
             wangyi_commit_limit = 300;
             newsOrEntOrSports = true;
         }
+
+        LogFactory.getFactory().setAttribute("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.NoOpLog");
 
         //模拟一个浏览器
         final WebClient webClient = new WebClient(BrowserVersion.CHROME);
@@ -139,9 +142,11 @@ public class WangYiUtil {
 
             }
         } catch (IOException e) {
-            log.error("WangYiUtil IOException:" + e.getMessage());
+//            log.error("WangYiUtil IOException:" + e.getMessage());
+//            System.out.println("WangYiUtil IOException:" + e.getMessage());
         } catch (Exception e) {
-            log.error("WangYiUtil Exception:" + e.getMessage());
+//            log.error("WangYiUtil Exception:" + e.getMessage());
+//            System.out.println("WangYiUtil Exception:" + e.getMessage());
         } finally {
 //            webClient.close();
         }
@@ -157,6 +162,7 @@ public class WangYiUtil {
         String TargetURL = newsUrl;
 //        TargetURL = "http://sports.163.com/17/0419/05/CIC30P0P00058781.html";
 
+        LogFactory.getFactory().setAttribute("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.NoOpLog");
         //模拟一个浏览器
         final WebClient webClient = new WebClient(BrowserVersion.CHROME);
         //设置webClient的相关参数
@@ -217,7 +223,8 @@ public class WangYiUtil {
                     Date date = sdf.parse(time);
                     news.setTime(date);
                 } catch (ParseException e) {
-                    log.error("Date ParseException:" + e.getMessage());
+//                    log.error("Date ParseException:" + e.getMessage());
+//                    System.out.println("Date ParseException:" + e.getMessage());
                 }
                 news.setChannelname(type);//类型
                 news.setContent("");
@@ -232,11 +239,14 @@ public class WangYiUtil {
                 getComments(commUrl);
             }
         } catch (HttpHostConnectException e) {
-            log.error("WangYiUtil HttpHostConnectException:" + e.getMessage());
+//            log.error("WangYiUtil HttpHostConnectException:" + e.getMessage());
+//            System.out.println("WangYiUtil HttpHostConnectException:" + e.getMessage());
         } catch (IOException e) {
-            log.error("WangYiUtil IOException:" + e.getMessage());
+//            log.error("WangYiUtil IOException:" + e.getMessage());
+//            System.out.println("WangYiUtil IOException:" + e.getMessage());
         } catch (Exception e) {
-            log.error("WangYiUtil Exception:" + e.getMessage());
+//            log.error("WangYiUtil Exception:" + e.getMessage());
+//            System.out.println("WangYiUtil Exception:" + e.getMessage());
         } finally {
 //            webClient.close();
         }
@@ -246,6 +256,7 @@ public class WangYiUtil {
     public void getComments(String url) {
         String TargetURL = url;
 
+        LogFactory.getFactory().setAttribute("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.NoOpLog");
         //模拟一个浏览器
         final WebClient webClient = new WebClient(BrowserVersion.CHROME);
         //设置webClient的相关参数
@@ -301,9 +312,11 @@ public class WangYiUtil {
 
 
         } catch (IOException e) {
-            log.error("WangYiUtil IOException:" + e.getMessage());
+//            log.error("WangYiUtil IOException:" + e.getMessage());
+//            System.out.println("WangYiUtil IOException:" + e.getMessage());
         } catch (Exception e) {
-            log.error("WangYiUtil Exception:" + e.getMessage());
+//            log.error("WangYiUtil Exception:" + e.getMessage());
+//            System.out.println("WangYiUtil Exception:" + e.getMessage());
         } finally {
 //            webClient.close();
         }
@@ -334,7 +347,8 @@ public class WangYiUtil {
                 Date date = sdf.parse(postTime);
                 comment.setCommentDate(date);
             } catch (ParseException e) {
-                log.error("ParseException:" + e.getMessage());
+//                log.error("ParseException:" + e.getMessage());
+                System.out.println("ParseException:" + e.getMessage());
             }
 
             Element body = element.getElementsByClass("body").first().getElementsByTag("div").first();
@@ -351,7 +365,7 @@ public class WangYiUtil {
                 Elements contents = body.getElementsByClass("content");
                 for (Element content : contents) {
                     boxList.add(content.text());
-                    System.out.println(content.text());
+//                    System.out.println(content.text());
                 }
                 String jsonString = JSON.toJSONString(boxList);
                 JSONArray boxlist = JSONArray.parseArray(jsonString);
@@ -365,7 +379,8 @@ public class WangYiUtil {
                         commentService.insertComment(comment);
                     }
                 } catch (Exception e) {
-                    log.error("Exception:" + e.getMessage());
+//                    log.error("Exception:" + e.getMessage());
+//                    System.out.println("Exception:" + e.getMessage());
                 }
             }
         }

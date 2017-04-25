@@ -23,7 +23,7 @@ import java.util.List;
  */
 @Service
 public class WangYiNews {
-    private Logger log = Logger.getLogger(WangYiNews.class);
+//    private Logger log = Logger.getLogger(WangYiNews.class);
 
     @Resource
     private NewsService newsService;
@@ -98,7 +98,8 @@ public class WangYiNews {
      * @return
      */
     public void getNews() {
-        log.info("WangYiNews...");
+//        log.info("WangYiNews...");
+//        System.out.println("WangYiNews...");
         for (String type : types) {
             String jsonString = httpUtil.get(wangyi_news + "type=" + type + "&page=" + page + "&limit=" + limit);
             JSONObject object = JSON.parseObject(jsonString);
@@ -126,11 +127,12 @@ public class WangYiNews {
 
         TxtUtil txtUtil = new TxtUtil();//测试
         txtUtil.appendInfoToTxt("Started--" + new Date().toString());
-        Integer[] num = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13};
+        wangYiUtil.getNewsUrl(wangyi_news_rank, types[0]);//新闻排行榜
+        Integer[] num = {0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13};
         List<Integer> list = Arrays.asList(num);
         Collections.shuffle(list);
 //        for (Integer i : list) {
-        for (int i = 0; i < 11; i++) {
+        for (int i = 0; i < 1; i++) {
             switch (list.get(i)) {
                 case 0:
                 case 1:
@@ -142,13 +144,13 @@ public class WangYiNews {
                     break;
                 case 3:
                 case 13:
-                    wangYiUtil.getNewsUrl(wangyi_tech_rank, types[3]);//科技排行榜
+                    wangYiUtil.getNewsUrl(wangyi_ent_rank, types[5]);//娱乐排行榜
                     break;
                 case 4:
                     wangYiUtil.getNewsUrl(wangyi_edu_rank, types[4]);//教育排行榜
                     break;
                 case 5:
-                    wangYiUtil.getNewsUrl(wangyi_ent_rank, types[5]);//娱乐排行榜
+                    wangYiUtil.getNewsUrl(wangyi_tech_rank, types[3]);//科技排行榜
                     break;
                 case 6:
                     wangYiUtil.getNewsUrl(wangyi_finance_rank, types[6]);//财经排行榜
