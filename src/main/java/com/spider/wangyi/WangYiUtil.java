@@ -2,6 +2,7 @@ package com.spider.wangyi;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.ericsoft.demo.BmobNewsUtils;
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.NicelyResynchronizingAjaxController;
 import com.gargoylesoftware.htmlunit.WebClient;
@@ -42,6 +43,8 @@ public class WangYiUtil {
     private NewsServiceImpl newsService;
     @Autowired
     private CommentService commentService;
+    @Autowired
+    private BmobNewsUtils bmobNewsUtils;//操作Bmob数据库中news数据表的
     private int newsid;//新闻在数据库中存放的id
     private int displayCount;//评论数量
 
@@ -51,7 +54,7 @@ public class WangYiUtil {
     @Value("#{configProperties['wangyi_comment_num']}")
     private int commentNum;//每页显示的评论数量
 
-    TxtUtil txtUtil = new TxtUtil();//测试
+//    TxtUtil txtUtil = new TxtUtil();//测试
     @Value("#{configProperties['wangyi_rank_limit']}")
     private int wangyi_rank_limit;//排行榜限制条件
 
@@ -124,15 +127,15 @@ public class WangYiUtil {
                         Elements td = tr.getElementsByClass(newsclass);
                         if (td.size() > 0) {
 
-                            long startTime = System.currentTimeMillis();    //获取开始时间
+//                            long startTime = System.currentTimeMillis();    //获取开始时间
                             Element num = tr.getElementsByClass("cBlue").first();//参与评论的数量
                             int nums = Integer.parseInt(num.text());
                             String Url = td.first().getElementsByTag("a").first().attr("href");
                             if (nums >= wangyi_rank_limit) {
                                 getNewsCommentUrl(Url, type);
                             }
-                            long endTime = System.currentTimeMillis();    //获取结束时间
-                            txtUtil.appendInfoToTxt((endTime - startTime) / 1000 + ":" + Url);//运行时间
+//                            long endTime = System.currentTimeMillis();    //获取结束时间
+//                            txtUtil.appendInfoToTxt((endTime - startTime) / 1000 + ":" + Url);//运行时间
                             break;
                         }
                     }
@@ -359,7 +362,7 @@ public class WangYiUtil {
 //                    commentWithoutBox = body.getElementsByTag("div").first().text();
                 commentWithoutBox = body.text();
                 comment.setCommentWithoutBox(commentWithoutBox);
-                System.out.println(commentWithoutBox);
+//                System.out.println(commentWithoutBox);
             } else {
                 //获取盖楼评论
                 Elements contents = body.getElementsByClass("content");

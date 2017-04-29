@@ -129,10 +129,11 @@ public class WangYiNews {
         txtUtil.appendInfoToTxt("Started--" + new Date().toString());
         wangYiUtil.getNewsUrl(wangyi_news_rank, types[0]);//新闻排行榜
         Integer[] num = {0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13};
+//        Integer[] num = {0, 0, 1};
         List<Integer> list = Arrays.asList(num);
         Collections.shuffle(list);
 //        for (Integer i : list) {
-        for (int i = 0; i < 1; i++) {
+        for (int i = 0; i < 3; i++) {
             switch (list.get(i)) {
                 case 0:
                 case 1:
