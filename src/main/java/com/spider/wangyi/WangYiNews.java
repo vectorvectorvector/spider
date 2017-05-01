@@ -125,14 +125,12 @@ public class WangYiNews {
 //        wangYiUtil.getNewsUrl(wangyi_house_rank, types[11]);//房产排行榜
 //        wangYiUtil.getNewsUrl(wangyi_whole_rank, types[12]);//全站排行榜
 
-        TxtUtil txtUtil = new TxtUtil();//测试
-        txtUtil.appendInfoToTxt("Started--" + new Date().toString());
+//        TxtUtil txtUtil = new TxtUtil();//测试
+//        txtUtil.appendInfoToTxt("Started--" + new Date().toString());
         wangYiUtil.getNewsUrl(wangyi_news_rank, types[0]);//新闻排行榜
         Integer[] num = {0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13};
-//        Integer[] num = {0, 0, 1};
         List<Integer> list = Arrays.asList(num);
         Collections.shuffle(list);
-//        for (Integer i : list) {
         for (int i = 0; i < 3; i++) {
             switch (list.get(i)) {
                 case 0:
@@ -173,8 +171,7 @@ public class WangYiNews {
                     break;
             }
         }
-
-        txtUtil.appendInfoToTxt("Stopped--" + new Date().toString());
+//        txtUtil.appendInfoToTxt("Stopped--" + new Date().toString());
     }
 
 

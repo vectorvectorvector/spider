@@ -2,7 +2,11 @@ package com.spider.wangyi;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
-import com.ericsoft.demo.BmobNewsUtils;
+import com.ericsoft.bmob.model.BmobInsertResult;
+import com.ericsoft.bmob.model.BmobSearchComment;
+import com.ericsoft.bmob.model.BmobSearchNews;
+import com.ericsoft.util.BmobCommentsUtils;
+import com.ericsoft.util.BmobNewsUtils;
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.NicelyResynchronizingAjaxController;
 import com.gargoylesoftware.htmlunit.WebClient;
@@ -11,10 +15,8 @@ import com.spider.model.Comment;
 import com.spider.model.News;
 import com.spider.service.CommentService;
 import com.spider.service.impl.NewsServiceImpl;
-import com.spider.util.TxtUtil;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.conn.HttpHostConnectException;
-import org.apache.log4j.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -23,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -43,9 +46,11 @@ public class WangYiUtil {
     private NewsServiceImpl newsService;
     @Autowired
     private CommentService commentService;
-    @Autowired
+    @Resource
     private BmobNewsUtils bmobNewsUtils;//操作Bmob数据库中news数据表的
-    private int newsid;//新闻在数据库中存放的id
+    @Resource
+    private BmobCommentsUtils bmobCommentsUtils;//操作Bmob数据库中comment数据表的
+    private String newsid = "";//新闻在数据库中存放的id
     private int displayCount;//评论数量
 
     @Value("#{configProperties['wangyi_page']}")
@@ -54,7 +59,7 @@ public class WangYiUtil {
     @Value("#{configProperties['wangyi_comment_num']}")
     private int commentNum;//每页显示的评论数量
 
-//    TxtUtil txtUtil = new TxtUtil();//测试
+    //    TxtUtil txtUtil = new TxtUtil();//测试
     @Value("#{configProperties['wangyi_rank_limit']}")
     private int wangyi_rank_limit;//排行榜限制条件
 
@@ -74,7 +79,7 @@ public class WangYiUtil {
 
     public void getNewsUrl(String url, String type) {
         String TargetURL = url;
-//        TargetURL = "http://sports.163.com/17/0419/05/CIC30P0P00058781.html";
+//        TargetURL = "http://news.163.com/17/0429/11/CJ6F7JEA0001899N.html";
         if (type.equals("news") || type.equals("ent") || type.equals("sport")) {//这三个类型的评论数量比较多
             wangyi_rank_limit = 5000;
             wangyi_commit_limit = 300;
@@ -99,30 +104,25 @@ public class WangYiUtil {
             Document doc = Jsoup.parse(pageXml);
 
             Elements tables = doc.getElementsByTag("table");
-//            for (Element e : tables) {
             for (int i = 0; i < tables.size(); i += 3) {
                 Element e = tables.get(i);
                 Elements trs = e.getElementsByTag("tr");
-
-                Integer[] random = new Integer[trs.size() + count];
                 if (newsOrEntOrSports) {
                     count = more > trs.size() ? trs.size() : more;
                 } else {
                     count = less > trs.size() ? trs.size() : less;
                 }
-                int l = 0;
-                for (; l < trs.size(); l++) {
-                    random[l] = l;
+//                List<Integer> list = Arrays.asList(random);
+                List<Integer> list = new ArrayList<>();
+                for (int l = 0; l < trs.size(); l++) {
+                    list.add(l);
                 }
                 for (int m = 0; m < count; m++) {
-                    random[l++] = m;
+                    list.add(m);
                 }
-                List<Integer> list = Arrays.asList(random);
                 Collections.shuffle(list);
-//                for (Element tr : trs) {
                 for (int k = 0; k < count; k++) {
                     Element tr = trs.get(list.get(k));
-//                    Element tr = trs.get(k);
                     for (String newsclass : newsClass) {
                         Elements td = tr.getElementsByClass(newsclass);
                         if (td.size() > 0) {
@@ -141,17 +141,16 @@ public class WangYiUtil {
                     }
 
                 }
-
-
             }
         } catch (IOException e) {
 //            log.error("WangYiUtil IOException:" + e.getMessage());
 //            System.out.println("WangYiUtil IOException:" + e.getMessage());
         } catch (Exception e) {
 //            log.error("WangYiUtil Exception:" + e.getMessage());
-//            System.out.println("WangYiUtil Exception:" + e.getMessage());
+            System.out.println("WangYiUtil Exception:" + e.getMessage());
         } finally {
 //            webClient.close();
+//            System.out.println("webClient关闭1");
         }
     }
 
@@ -204,11 +203,6 @@ public class WangYiUtil {
                     commNum = Integer.parseInt(commLink.text());
                 }
             }
-//            Element commBody = post_content_main.getElementsByClass("post_topshare_wrap").first();
-//            Element commLink = commBody.getElementsByClass("post_tie_top").first().getElementsByTag("a").get(1);
-//            String commUrl = commLink.attr("href");
-//            int commNum = Integer.parseInt(commLink.text());
-
             if (commNum >= wangyi_commit_limit) {//爬取评论
                 news.setUrl(newsUrl);
 
@@ -233,12 +227,6 @@ public class WangYiUtil {
                 news.setContent("");
                 news.setComment("");
                 news.setImgurl("-");
-
-//                newsid = newsService.selectNewsId(news.getUrl());
-//                if (newsid == 0) {
-//                    newsService.insertNews(news);
-//                    newsid = news.getNews_id();
-//                }
                 getComments(commUrl);
             }
         } catch (HttpHostConnectException e) {
@@ -252,6 +240,7 @@ public class WangYiUtil {
 //            System.out.println("WangYiUtil Exception:" + e.getMessage());
         } finally {
 //            webClient.close();
+//            System.out.println("webClient关闭2");
         }
     }
 
@@ -274,42 +263,39 @@ public class WangYiUtil {
             page = webClient.getPage(TargetURL);
             String pageXml = page.asXml(); // 以xml的形式获取响应文本
             Document doc = Jsoup.parse(pageXml);
-
             Element hotReplies = doc.getElementById("hotReplies");//热评
-            //获取评论数量
-           /* Elements ECount = hotReplies.getElementsByClass("displayCount");
-            if (ECount.size() > 0) {
-                displayCount = Integer.parseInt(ECount.first().getElementsByTag("em").text());
+
+            //先查询该新闻是否已经在数据库中
+            BmobSearchNews search = bmobNewsUtils.Search(news.getTitle(), 1);
+            if (search.getResults().length != 0) {
+                newsid = search.getResults()[0].getObjectId();
+            } else {//向数据库中插入数据
+                BmobInsertResult result = bmobNewsUtils.insert(news);
+                if (!result.getObjectId().equals("")) {
+                    newsid = result.getObjectId();
+                }
+//                System.out.println(result.getObjectId());
             }
 
-            if (displayCount > 1000)*/
-            {
 
-                //将新闻保存到数据库中
-                newsid = newsService.selectNewsId(news.getUrl());
-                if (newsid == 0) {
-                    newsService.insertNews(news);
-                    newsid = news.getNews_id();
-                }
-                getHotAndMainReplies(hotReplies, true);
-                Element mainReplies = doc.getElementById("mainReplies");//最新评论
-                getHotAndMainReplies(mainReplies, false);
+            getHotAndMainReplies(hotReplies, true);
+            Element mainReplies = doc.getElementById("mainReplies");//最新评论
+            getHotAndMainReplies(mainReplies, false);
 
-                //翻页获取最新评论
-                if (displayCount > 0) {
+            //翻页获取最新评论
+            if (displayCount > 0) {
 //                    int pageNum = displayCount / commentNum < wangyi_page ? displayCount / commentNum : wangyi_page;
-                    int pageNum = wangyi_page;
-                    if (displayCount / commentNum < pageNum) {
-                        pageNum = displayCount / commentNum;
-                    }
-                    for (int i = 2; i < pageNum; i++) {
-                        String script = "javascript:tiePage.showPage(" + i + ");";
-                        page.executeJavaScript(script);
-                        String xml = page.asXml(); // 以xml的形式获取响应文本
-                        Document document = Jsoup.parse(xml);
-                        mainReplies = document.getElementById("mainReplies");//最新评论
-                        getHotAndMainReplies(mainReplies, false);
-                    }
+                int pageNum = wangyi_page;
+                if (displayCount / commentNum < pageNum) {
+                    pageNum = displayCount / commentNum;
+                }
+                for (int i = 2; i < pageNum; i++) {
+                    String script = "javascript:tiePage.showPage(" + i + ");";
+                    page.executeJavaScript(script);
+                    String xml = page.asXml(); // 以xml的形式获取响应文本
+                    Document document = Jsoup.parse(xml);
+                    mainReplies = document.getElementById("mainReplies");//最新评论
+                    getHotAndMainReplies(mainReplies, false);
                 }
             }
 
@@ -322,6 +308,7 @@ public class WangYiUtil {
 //            System.out.println("WangYiUtil Exception:" + e.getMessage());
         } finally {
 //            webClient.close();
+//            System.out.println("webClient关闭3");
         }
     }
 
@@ -345,21 +332,14 @@ public class WangYiUtil {
             String position = pos.size() > 0 ? pos.first().text() : "";
             comment.setPositions(position);
             String postTime = element.getElementsByClass("postTime").first().text().substring(3);//多了字符：举报
-            try {
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-                Date date = sdf.parse(postTime);
-                comment.setCommentDate(date);
-            } catch (ParseException e) {
-//                log.error("ParseException:" + e.getMessage());
-                System.out.println("ParseException:" + e.getMessage());
+            if (!postTime.equals("")) {
+                comment.setCommentDate(postTime);
             }
-
             Element body = element.getElementsByClass("body").first().getElementsByTag("div").first();
             Elements commentBox = body.getElementsByClass("commentBox");//表示是回复评论的
             String commentWithoutBox = "";//直接回复的没盖楼
             List<String> boxList = new LinkedList<>();
             if (commentBox.size() == 0) {//表示是直接回复的
-//                    commentWithoutBox = body.getElementsByTag("div").first().text();
                 commentWithoutBox = body.text();
                 comment.setCommentWithoutBox(commentWithoutBox);
 //                System.out.println(commentWithoutBox);
@@ -372,19 +352,20 @@ public class WangYiUtil {
                 }
                 String jsonString = JSON.toJSONString(boxList);
                 JSONArray boxlist = JSONArray.parseArray(jsonString);
-                comment.setBoxList(boxlist.toJSONString());
+//                String s = boxlist.toJSONString();
+                comment.setBoxList(boxlist.toJSONString().replace("\"", "\\\""));
             }
-            if (newsid != 0) {
-                try {
-                    comment.setNews_id(newsid);
-                    Comment tmp = commentService.selectCommentByComment(comment);
-                    if (tmp == null) {
-                        commentService.insertComment(comment);
-                    }
-                } catch (Exception e) {
-//                    log.error("Exception:" + e.getMessage());
-//                    System.out.println("Exception:" + e.getMessage());
+            try {
+                comment.setNews_id(newsid);
+                BmobSearchComment bmobSearchComment = bmobCommentsUtils.Search(comment.getCommentWithoutBox(), comment.getBoxList(), 1);
+                if (bmobSearchComment == null || bmobSearchComment.getResults().length == 0) {
+                    bmobCommentsUtils.insert(comment);
+                    boxList = null;
+                    comment = null;
                 }
+            } catch (Exception e) {
+//                    log.error("Exception:" + e.getMessage());
+                System.out.println("Exception:" + e.getMessage());
             }
         }
     }

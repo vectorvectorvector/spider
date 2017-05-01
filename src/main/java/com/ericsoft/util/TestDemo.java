@@ -1,42 +1,35 @@
-package com.ericsoft.demo;
+package com.ericsoft.util;
+
+import java.util.Date;
 
 import com.ericsoft.bmob.bson.BSON;
 import com.ericsoft.bmob.bson.BSONObject;
 import com.ericsoft.bmob.restapi.Bmob;
-import com.spider.model.News;
-import org.springframework.stereotype.Service;
 
-import java.util.Date;
+public class TestDemo {
 
-@Service
-public class BmobNewsUtils {
+    public static void main(String[] args) {
+        //BSONObject 简单使用
+//		CreateClassBSONObject();
 
-    public BmobNewsUtils() {
         initBmob();//初始化
-    }
-
-    /**
-     * 向news表中插入数据
-     *
-     * @param news
-     */
-    private static String insert(News news) {
-        BSONObject bson = new BSONObject();
-        bson.put("news_id", news.getNews_id());
-        bson.put("id", news.getId());
-        bson.put("imgurl", news.getImgurl());
-        bson.put("url", news.getUrl());
-        bson.put("title", news.getTitle());
-        bson.put("time", news.getTime());
-        bson.put("channelname", news.getChannelname());
-        bson.put("content", news.getContent());
-        bson.put("comment", news.getComment());
-        return Bmob.insert("news", bson.toString());
+//		Search();//查询
+//		update();//修改
+//		delete();//删除
+        insert();//新增
+//		callFunction();//调用云代码
+//		findPayOrder();//查询支付订单
+//		count();//计数
+//		upload();//上传文件
+//		requestSms();//发送短信
     }
 
     //使用RestAPI前必须先初始化，KEY可在Bmob应用信息里查询。
     private static void initBmob() {
-        Bmob.initBmob("fe2d0963f4f6019ccb3a23a76de05397", "b2584e80f16b216bef83fe4640463354");
+        Bmob.initBmob("fe2d0963f4f6019ccb3a23a76de05397",
+                "b2584e80f16b216bef83fe4640463354");
+        //用到超级权限需要注册该Key
+//		Bmob.initMaster("Your Bmob-Master-Key");
     }
 
     private static void upload() {
@@ -44,11 +37,11 @@ public class BmobNewsUtils {
         System.out.println(res);
     }
 
-
     private static void requestSms() {
-        String res = Bmob.requestSms("13614112019", "您的验证码是：222222, 有效期是10分钟。");
+        String res = Bmob.requestSms("13168391111", "您的验证码是：222222, 有效期是10分钟。");
         System.out.println(res);
     }
+
 
     private static void Search() {
         //where方法很多，可参考官网RestAPI文档
@@ -72,6 +65,26 @@ public class BmobNewsUtils {
 
     private static void delete() {
         Bmob.delete("Your TableName", "Your objectId");
+    }
+
+    private static void insert() {
+//        BSONObject bson = new BSONObject();
+//        bson.put("playerName", "111");
+//        bson.put("score", 100);
+//        String result = Bmob.insert("GameScore", bson.toString());
+//        System.out.println(result);
+
+        BSONObject bson = new BSONObject();
+        bson.put("url", "");
+        bson.put("title", "");
+        bson.put("time", new Date());
+        bson.put("imgurl", "");
+        bson.put("id", 2);
+        bson.put("content", "");
+        bson.put("comment", "");
+        bson.put("channelname", "");
+        String result = Bmob.insert("GameScore", bson.toString());
+        System.out.println(result);
     }
 
     private static void callFunction() {
@@ -136,19 +149,4 @@ public class BmobNewsUtils {
 
     }
 
-    public static void main(String[] args) {
-        //BSONObject 简单使用
-//		CreateClassBSONObject();
-
-        initBmob();//初始化
-//		Search();//查询
-//		update();//修改
-//		delete();//删除
-//		insert();//新增
-//		callFunction();//调用云代码
-//		findPayOrder();//查询支付订单
-//		count();//计数
-//		upload();//上传文件
-        requestSms();//发送短信
-    }
 }
