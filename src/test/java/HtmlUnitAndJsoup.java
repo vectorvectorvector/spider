@@ -4,9 +4,10 @@
 
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.util.Date;
+import java.util.*;
 
 import com.gargoylesoftware.htmlunit.*;
+import com.spider.util.DataUtil;
 import com.spider.util.TxtUtil;
 import com.spider.wangyi.CommentsUtil;
 import org.jsoup.Connection;
@@ -292,7 +293,9 @@ public class HtmlUnitAndJsoup {
 //        String TargetURL="http://comment.news.163.com/news2_bbs/CEBLDGEF0001899N.html";
 //        String TargetURL="http://news.163.com/";
 //        String TargetURL="http://news.163.com/17/0303/13/CEJUHPM8000187V9.html";
-        String TargetURL = "http://comment.news.163.com/news2_bbs/CEJOE7RO000181TI.html";
+//        String TargetURL = "http://comment.news.163.com/news2_bbs/CEJOE7RO000181TI.html";
+//        String TargetURL = "http://www.toutiao.com/ch/funny/";
+        String TargetURL = "http://neihanshequ.com/pic/";
 //		String TargetURL="http://www.baidu.com";
         //模拟一个浏览器
         final WebClient webClient = new WebClient(BrowserVersion.CHROME);
@@ -306,7 +309,8 @@ public class HtmlUnitAndJsoup {
         //模拟浏览器打开一个目标网址
         final HtmlPage page = webClient.getPage(TargetURL);
 //        System.out.println(page.asText());
-        System.out.println(page.asXml());
+//        System.out.println(page.asXml());
+        String xml = page.asXml();
         System.out.println("------------------");
         System.out.println(page.getUrl());
         //page.executeJavaScript("javascript:searchFinishPerson('6655',2);");
@@ -344,8 +348,22 @@ public class HtmlUnitAndJsoup {
 
     @Test
     public void javaTest() {
-        TxtUtil txtUtil = new TxtUtil();
-        txtUtil.appendInfoToTxt(new Date().toString());
+        Integer[] num = {0, 2, 3, 4, 5, 6, 8, 9, 10, 12};
+        List<Integer> list = Arrays.asList(num);
+        Collections.shuffle(list);
+        for (Integer i : list) {
+            System.out.print(i + " ");
+            System.out.println(i == 2);
+        }
+    }
+
+    @Test
+    public void dataUtilTest() {
+        DataUtil dataUtil = new DataUtil();
+//        String result = DataUtil.doGetCharset("http://neihanshequ.com/pic/","utf-8");
+        String result = DataUtil.doGetCharset("http://qiqu.uc.cn/?uc_param_str=frpfvedncpssntnwbipreime#!/index/index","utf-8");
+        Document doc = Jsoup.parse(result);
+        System.out.println(result);
     }
 
 }

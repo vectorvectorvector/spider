@@ -34,7 +34,7 @@ public class HttpUtil {
     /**
      * 日志对象。
      */
-    private static Logger logger = Logger.getLogger(HttpUtil.class);
+//    private static Logger logger = Logger.getLogger(HttpUtil.class);
 
     /**
      * 默认HTTP请求客户端对象。
@@ -51,7 +51,7 @@ public class HttpUtil {
     public HttpUtil() {
         // 1. 创建HttpClient对象。
         _httpclient = HttpClients.createDefault();
-        logger.info("create _httpclient ...");
+//        logger.info("create _httpclient ...");
     }
 
     /**
@@ -61,7 +61,7 @@ public class HttpUtil {
         // 1. 创建HttpClient对象。
         _httpclient = HttpClients.createDefault();
         this._headers = headers;
-        logger.info("create _httpclient ...");
+//        logger.info("create _httpclient ...");
     }
 
     /**
@@ -75,7 +75,7 @@ public class HttpUtil {
     public String post(String url, Map<String, String> params) {
         // 2. 创建请求方法的实例，并指定请求URL，添加请求参数。
         HttpPost post = postForm(url, params);
-        logger.info("create httppost : " + url);
+//        logger.info("create httppost : " + url);
 
         return invoke(post);
     }
@@ -88,7 +88,7 @@ public class HttpUtil {
      */
     public String get(String url) {
         HttpGet get = new HttpGet(url);
-        logger.info("create httpget : " + url);
+//        logger.info("create httpget : " + url);
 
         return invoke(get);
     }
@@ -105,7 +105,7 @@ public class HttpUtil {
         if (this._headers != null) {
             //
             addHeaders(request);
-            logger.info("addHeaders to http ...");
+//            logger.info("addHeaders to http ...");
         }
 
         HttpResponse response = null;
@@ -114,14 +114,14 @@ public class HttpUtil {
             response = _httpclient.execute(request);
             HttpEntity httpEntity = response.getEntity();
             result = EntityUtils.toString(httpEntity);//取出应答字符串
-            logger.info("execute http success... ; result = " + result);
+//            logger.info("execute http success... ; result = " + result);
         } catch (Exception e) {
             e.printStackTrace();
-            logger.info("execute http exception...");
+//            logger.info("execute http exception...");
         } finally {
             // 4. 无论执行方法是否成功，都必须释放连接。
             request.abort();
-            logger.info("release http ...");
+//            logger.info("release http ...");
         }
 
         return result;
@@ -145,7 +145,7 @@ public class HttpUtil {
         }
 
         try {
-            logger.info("set utf-8 form entity to httppost ...");
+//            logger.info("set utf-8 form entity to httppost ...");
             httpost.setEntity(new UrlEncodedFormEntity(nvps, HTTP.UTF_8));
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
@@ -180,7 +180,7 @@ public class HttpUtil {
      */
     public void shutdown() {
         try {
-            logger.info("shutdown _httpclient ...");
+//            logger.info("shutdown _httpclient ...");
             _httpclient.close();
         } catch (IOException e) {
             e.printStackTrace();

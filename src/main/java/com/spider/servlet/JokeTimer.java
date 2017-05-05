@@ -1,7 +1,9 @@
 package com.spider.servlet;
 
+import com.spider.Joke.NeiHan;
+import com.spider.Joke.PengFu;
+import com.spider.Joke.QiQuBaiKe;
 import com.spider.wangyi.WangYiNews;
-import org.apache.log4j.Logger;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -10,22 +12,25 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import java.util.TimerTask;
 
 
-public class SpiderTimer extends TimerTask implements ApplicationContextAware {
+public class JokeTimer extends TimerTask implements ApplicationContextAware {
     private ApplicationContext applicationContext;
-    private WangYiNews wangYiNews;
+    private NeiHan neiHan;
+    private QiQuBaiKe qiQuBaiKe;
+    private PengFu pengFu;
 
 //    private Logger log = Logger.getLogger(SpiderTimer.class);
 
-    public SpiderTimer() {
+    public JokeTimer() {
         applicationContext = new ClassPathXmlApplicationContext("classpath:applicationContext.xml");
-        wangYiNews = (WangYiNews) applicationContext.getBean("wangYiNews");
+        neiHan = (NeiHan) applicationContext.getBean("neiHan");
+        qiQuBaiKe = (QiQuBaiKe) applicationContext.getBean("qiQuBaiKe");
+        pengFu = (PengFu) applicationContext.getBean("pengFu");
     }
 
     public void run() {
-//        log.info("网易新闻---------");
-//        System.out.println("网易新闻---------");
-//        wangYiNews.getNews();
-        wangYiNews.getWangyiComments();
+//        neiHan.getNeiHan();
+//        qiQuBaiKe.getQiQu();
+        pengFu.getPengfu();
     }
 
     @Override

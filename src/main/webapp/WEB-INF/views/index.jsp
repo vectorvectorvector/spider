@@ -181,7 +181,13 @@
     <![endif]-->
 
 </head>
-<body>
+<script type="javascript">
+    function onloaded() {
+        alert('加载完成');
+    }
+
+</script>
+<body onload="onloaded()" >
 <div class="htmleaf-container">
     <header class="htmleaf-header">
         <h1>欢迎使用</h1>

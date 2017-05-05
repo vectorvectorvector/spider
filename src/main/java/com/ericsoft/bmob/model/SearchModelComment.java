@@ -1,13 +1,12 @@
-package com.spider.model;
+package com.ericsoft.bmob.model;
 
 import java.util.Date;
-import java.util.List;
 
 /**
- * Created by zhouchao on 2017/3/5.
+ * Created by Administrator on 2017/4/30/0030.
  */
-public class Comment {
-    private int id;
+public class SearchModelComment {
+    private String objectId;
     private String news_id;
     private String username;//评论的用户名
     private String head;//评论者的头像
@@ -15,15 +14,15 @@ public class Comment {
     private String commentDate;//评论时间
     private String commentWithoutBox;//没盖楼的回复
     private String boxList;//盖楼的形式回复
+    private Date createdAt;
+    private Date updatedAt;
 
-    public Comment() {
-        username = "";
-        head = "";
-        positions = "";
-        commentWithoutBox = "";
-        boxList = "";
-        news_id = "";
-        commentDate = "";
+    public String getObjectId() {
+        return objectId;
+    }
+
+    public void setObjectId(String objectId) {
+        this.objectId = objectId;
     }
 
     public String getNews_id() {
@@ -32,14 +31,6 @@ public class Comment {
 
     public void setNews_id(String news_id) {
         this.news_id = news_id;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getUsername() {
@@ -88,5 +79,21 @@ public class Comment {
 
     public void setBoxList(String boxList) {
         this.boxList = boxList;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Date getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }
