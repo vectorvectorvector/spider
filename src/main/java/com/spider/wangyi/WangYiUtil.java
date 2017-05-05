@@ -226,7 +226,21 @@ public class WangYiUtil {
                 news.setChannelname(type);//类型
                 news.setContent("");
                 news.setComment("");
-                news.setImgurl("-");
+
+                //查询文章里面的图片
+                Elements pic = post_content_mains.first().getElementsByClass("f_center");
+                StringBuilder images = new StringBuilder();
+                if (pic.size() == 0) {
+                    news.setImgurl("-");
+                } else if (pic.size() < 3) {
+                    images.append(pic.first().getElementsByTag("img").first().attr("src"));
+                } else {
+                    for (int i = 0; i < 3; i++) {
+                        Element e = pic.get(i);
+                        images.append(e.getElementsByTag("img").first().attr("src") + ";");
+                    }
+                }
+                news.setImgurl(images.toString());
                 getComments(commUrl);
             }
         } catch (HttpHostConnectException e) {
