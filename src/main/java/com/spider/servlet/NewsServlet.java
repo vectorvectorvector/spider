@@ -19,7 +19,7 @@ public class NewsServlet extends HttpServlet {
 
     public void init() throws ServletException {
 //        timer.schedule(new SpiderTimer(), 1000, 1*60*60*1000); // 一小时执行一次
-        timer.schedule(new JokeTimer(), 1000, 1*1*60*1000); //10分钟执行一次
+        timer.schedule(new JokeTimer(), 1000, 1 * 1 * 60 * 1000); //10分钟执行一次
     }
 
     public void doGet(HttpServletRequest httpservletrequest,

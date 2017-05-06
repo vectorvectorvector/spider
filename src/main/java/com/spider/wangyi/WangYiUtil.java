@@ -15,6 +15,7 @@ import com.spider.model.Comment;
 import com.spider.model.News;
 import com.spider.service.CommentService;
 import com.spider.service.impl.NewsServiceImpl;
+import com.spider.util.DataUtil;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.conn.HttpHostConnectException;
 import org.jsoup.Jsoup;
@@ -87,21 +88,9 @@ public class WangYiUtil {
         }
 
         LogFactory.getFactory().setAttribute("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.NoOpLog");
-
-        //模拟一个浏览器
-        final WebClient webClient = new WebClient(BrowserVersion.CHROME);
-        //设置webClient的相关参数
-        webClient.getOptions().setJavaScriptEnabled(true);
-        webClient.getOptions().setActiveXNative(false);
-        webClient.getOptions().setCssEnabled(false);
-        webClient.getOptions().setThrowExceptionOnScriptError(false); //js运行错误时，是否抛出异常
-        webClient.setAjaxController(new NicelyResynchronizingAjaxController());
-        //模拟浏览器打开一个目标网址
-        final HtmlPage page;
         try {
-            page = webClient.getPage(TargetURL);
-            String pageXml = page.asXml(); // 以xml的形式获取响应文本
-            Document doc = Jsoup.parse(pageXml);
+            String result = DataUtil.doGetCharset(TargetURL, "gb2312");
+            Document doc = Jsoup.parse(result);
 
             Elements tables = doc.getElementsByTag("table");
             for (int i = 0; i < tables.size(); i += 3) {
@@ -112,7 +101,6 @@ public class WangYiUtil {
                 } else {
                     count = less > trs.size() ? trs.size() : less;
                 }
-//                List<Integer> list = Arrays.asList(random);
                 List<Integer> list = new ArrayList<>();
                 for (int l = 0; l < trs.size(); l++) {
                     list.add(l);
@@ -126,7 +114,6 @@ public class WangYiUtil {
                     for (String newsclass : newsClass) {
                         Elements td = tr.getElementsByClass(newsclass);
                         if (td.size() > 0) {
-
 //                            long startTime = System.currentTimeMillis();    //获取开始时间
                             Element num = tr.getElementsByClass("cBlue").first();//参与评论的数量
                             int nums = Integer.parseInt(num.text());
@@ -135,22 +122,16 @@ public class WangYiUtil {
                                 getNewsCommentUrl(Url, type);
                             }
 //                            long endTime = System.currentTimeMillis();    //获取结束时间
-//                            txtUtil.appendInfoToTxt((endTime - startTime) / 1000 + ":" + Url);//运行时间
+//                            System.out.println("时间："+(endTime - startTime) / 1000);
                             break;
                         }
                     }
 
                 }
             }
-        } catch (IOException e) {
-//            log.error("WangYiUtil IOException:" + e.getMessage());
-//            System.out.println("WangYiUtil IOException:" + e.getMessage());
-        } catch (Exception e) {
+        }  catch (Exception e) {
 //            log.error("WangYiUtil Exception:" + e.getMessage());
             System.out.println("WangYiUtil Exception:" + e.getMessage());
-        } finally {
-//            webClient.close();
-//            System.out.println("webClient关闭1");
         }
     }
 
@@ -290,7 +271,6 @@ public class WangYiUtil {
                 }
 //                System.out.println(result.getObjectId());
             }
-
 
             getHotAndMainReplies(hotReplies, true);
             Element mainReplies = doc.getElementById("mainReplies");//最新评论

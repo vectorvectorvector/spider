@@ -361,7 +361,7 @@ public class HtmlUnitAndJsoup {
     public void dataUtilTest() {
         DataUtil dataUtil = new DataUtil();
 //        String result = DataUtil.doGetCharset("http://neihanshequ.com/pic/","utf-8");
-        String result = DataUtil.doGetCharset("http://qiqu.uc.cn/?uc_param_str=frpfvedncpssntnwbipreime#!/index/index","utf-8");
+        String result = DataUtil.doGetCharset("http://news.163.com/17/0505/23/CJN8TCVO000187VE.html","gb2312");
         Document doc = Jsoup.parse(result);
         System.out.println(result);
     }
