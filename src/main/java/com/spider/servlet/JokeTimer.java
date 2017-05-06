@@ -3,6 +3,7 @@ package com.spider.servlet;
 import com.spider.Joke.NeiHan;
 import com.spider.Joke.PengFu;
 import com.spider.Joke.QiQuBaiKe;
+import com.spider.Joke.QiuBai;
 import com.spider.wangyi.WangYiNews;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
@@ -17,6 +18,7 @@ public class JokeTimer extends TimerTask implements ApplicationContextAware {
     private NeiHan neiHan;
     private QiQuBaiKe qiQuBaiKe;
     private PengFu pengFu;
+    private QiuBai qiuBai;
 
 //    private Logger log = Logger.getLogger(SpiderTimer.class);
 
@@ -25,12 +27,14 @@ public class JokeTimer extends TimerTask implements ApplicationContextAware {
         neiHan = (NeiHan) applicationContext.getBean("neiHan");
         qiQuBaiKe = (QiQuBaiKe) applicationContext.getBean("qiQuBaiKe");
         pengFu = (PengFu) applicationContext.getBean("pengFu");
+        qiuBai = (QiuBai) applicationContext.getBean("qiuBai");
     }
 
     public void run() {
 //        neiHan.getNeiHan();
 //        qiQuBaiKe.getQiQu();
-        pengFu.getPengfu();
+//        pengFu.getPengfu();
+        qiuBai.getQiubai();
     }
 
     @Override
