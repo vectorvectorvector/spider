@@ -23,6 +23,9 @@ import javax.annotation.Resource;
 @Service
 public class PengFu {
     private String Url = "https://www.pengfu.com/";
+    private String ShenHuifuUrl = "https://www.pengfu.com/shen_1_1.html";
+    private String QutuUrl = "https://www.pengfu.com/qutu_1.html";
+    private String DuanziUrl = "https://www.pengfu.com/xiaohua_1.html";
     private Joke joke;
     @Resource
     private BmobJokeUtils bmobJokeUtils;
@@ -32,7 +35,7 @@ public class PengFu {
     }
 
     //解析内涵社区的文档内容：文字版的和图片版的
-    public void parseHtml(String result) {
+    public void parseHtml(String result, String table) {
         Document doc = Jsoup.parse(result);
         Elements lists = doc.select("div.list-item").select(".bg1").select(".b1").select(".boxshadow");
         for (Element e : lists) {
@@ -48,25 +51,41 @@ public class PengFu {
             if (title.size() > 0) {
                 joke.setContent(title.first().getElementsByTag("a").text().replace("\"", "\\\""));
             }
-            //////////////////还有可能是长图片：ContentMore MoreBig
-            //////////////////还有可能是长图片：ContentMore MoreBig
-            //////////////////还有可能是长图片：ContentMore MoreBig
-            //////////////////还有可能是长图片：ContentMore MoreBig
-
-
-
             Elements image = e.select("div.content-img").select(".clearfix").select(".pt10").select(".relative");
             if (image.size() > 0) {
                 Elements img = image.first().getElementsByTag("img");
                 if (img.size() > 0) {
-                    if (img.first().attr("gifsrc") != null) {
-                        joke.setImage(img.first().attr("gifsrc"));
-                    } else if (img.first().attr("src") != null) {
-                        joke.setImage(img.first().attr("src"));
+                    String gifsrc = img.first().attr("gifsrc");
+                    String src = img.first().attr("src");
+                    String jpgsrc = img.first().attr("jpgsrc");
+                    if (gifsrc != null && !gifsrc.equals("")) {
+                        joke.setImage(gifsrc);
+                    } else if (src != null && !src.equals("")) {
+                        joke.setImage(src);
+                    } else if (jpgsrc != null && !jpgsrc.equals("")) {
+                        joke.setImage(jpgsrc);
                     }
                 }
+                if (table.equals("jokeText")) {
+                    String Content = image.text().replace("\"", "\\\"");
+                    joke.setContent(Content);
+                }
             }
-            insert("joke");
+            Elements shen = e.getElementsByClass("shenhf-con");
+            if (shen.size() > 0) {
+                joke.setShenHuiFu(shen.first().text().replace("\"", "\\\""));
+            }
+            if (table.equals("joke")) {
+                if (!joke.getImage().equals("")) {
+                    insert(table);
+                }
+            } else {
+                if (!joke.getContent().equals("")) {
+                    insert(table);
+                }
+            }
+            joke.init();
+            joke.setOrigin("捧腹网");
         }
     }
 
@@ -75,7 +94,19 @@ public class PengFu {
         joke.setOrigin("捧腹网");
         String result = DataUtil.doGetCharset(Url, "utf-8");
         if (result != null && !result.equals("")) {
-            parseHtml(result);
+            parseHtml(result,"joke");
+        }
+        result = DataUtil.doGetCharset(ShenHuifuUrl, "utf-8");
+        if (result != null && !result.equals("")) {
+            parseHtml(result,"joke");
+        }
+        result = DataUtil.doGetCharset(QutuUrl, "utf-8");
+        if (result != null && !result.equals("")) {
+            parseHtml(result,"joke");
+        }
+        result = DataUtil.doGetCharset(DuanziUrl, "utf-8");
+        if (result != null && !result.equals("")) {
+            parseHtml(result, "jokeText");
         }
     }
 
