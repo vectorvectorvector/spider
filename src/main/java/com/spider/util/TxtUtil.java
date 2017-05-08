@@ -9,6 +9,8 @@ import java.io.PrintWriter;
  * Created by zhouchao on 2017/4/18/0018.
  */
 public class TxtUtil {
+
+    //向txt文件中添加数据
     public void appendInfoToTxt(String info) {
         FileWriter fw = null;
         try {
@@ -28,5 +30,9 @@ public class TxtUtil {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public String clearHtmlTag(String html) {
+        return "";
     }
 }
