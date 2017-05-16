@@ -381,10 +381,10 @@ public class HtmlUnitAndJsoup {
 //        Document doc = Jsoup.connect("http://music.163.com/discover/toplist")
 //                .header("Referer", "http://music.163.com/")
 //                .header("Host", "music.163.com").get();
-        Document doc = Jsoup.connect("http://music.163.com/song?id=468517654")
+        Document doc = Jsoup.connect("http://music.163.com/weapi/song/enhance/player/url?csrf_token=")
                 .header("Referer", "http://music.163.com/")
                 .header("Host", "music.163.com").get();
-        Elements divs = doc.getElementsByClass("cntwrap");
+//        Elements divs = doc.getElementsByClass("cntwrap");
         System.out.println();
     }
 
@@ -413,6 +413,49 @@ public class HtmlUnitAndJsoup {
         encSecKey = EncryptTools.zfill(encSecKey, 256);
         //评论获取
         Document document = Jsoup.connect("http://music.163.com/weapi/v1/resource/comments/R_SO_4_478029412/").cookie("appver", "1.5.0.75771")
+                .header("Referer", "http://music.163.com/").data("params", params).data("encSecKey", encSecKey)
+                .ignoreContentType(true).post();
+        System.out.println("评论：" + document.text());
+        try {
+            MusicComments musicComment = JSON.parseObject(document.text(), MusicComments.class);
+            MusicComment[] musicComments = musicComment.getComments();
+            for (MusicComment comment : musicComments) {
+                MusicCommentReply[] repliy = comment.getBeReplied();
+                if (comment.getBeReplied() != null && comment.getBeReplied().length > 0) {
+                    System.out.println(repliy[0].getContent()+"==");
+                }
+            }
+            System.out.println();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        System.out.println();
+    }
+    @Test
+    public void test163CommentUser() throws Exception {
+        //私钥，随机16位字符串（自己可改）
+        String secKey = "cd859f54539b24b7";
+//        String text = "{\"username\": \"\", \"rememberLogin\": \"true\", \"password\": \"\",\"offset\": \"2\"}";
+        String text = "{\"username\": \"\", \"rememberLogin\": \"true\", \"password\": \"\",\"offset\": \"0\",\"limit\": \"20\"}";
+        String modulus = "00e0b509f6259df8642dbc35662901477df22677ec152b5ff68ace615bb7b725152b3ab17a876aea8a5aa76d2e417629ec4ee341f56135fccf695280104e0312ecbda92557c93870114af6c9d05c4f7f0c3685b7a46bee255932575cce10b424d813cfe4875d3e82047b97ddef52741d546b8e289dc6935b3ece0462db0a22b8e7";
+        String nonce = "0CoJUm6Qyw8W8jud";
+        String pubKey = "010001";
+        //2次AES加密，得到params
+        String params = EncryptTools.encrypt(EncryptTools.encrypt("http://music.163.com/song?id=477332980", nonce), secKey);
+        StringBuffer stringBuffer = new StringBuffer(secKey);
+        //逆置私钥
+        secKey = stringBuffer.reverse().toString();
+        String hex = Hex.encodeHexString(secKey.getBytes());
+        BigInteger bigInteger1 = new BigInteger(hex, 16);
+        BigInteger bigInteger2 = new BigInteger(pubKey, 16);
+        BigInteger bigInteger3 = new BigInteger(modulus, 16);
+        //RSA加密计算
+        BigInteger bigInteger4 = bigInteger1.pow(bigInteger2.intValue()).remainder(bigInteger3);
+        String encSecKey = Hex.encodeHexString(bigInteger4.toByteArray());
+        //字符填充
+        encSecKey = EncryptTools.zfill(encSecKey, 256);
+        //评论获取
+        Document document = Jsoup.connect("http://music.163.com/weapi/song/enhance/player/url?csrf_token=").cookie("appver", "1.5.0.75771")
                 .header("Referer", "http://music.163.com/").data("params", params).data("encSecKey", encSecKey)
                 .ignoreContentType(true).post();
         System.out.println("评论：" + document.text());
